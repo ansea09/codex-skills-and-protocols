@@ -30,6 +30,17 @@ canonical_files:
     complex: examples/complex-example.md
   execution_record_template: templates/protocol-execution-record.yaml
 
+process_models:
+  assistant_user_interaction:
+    problem_frame: process-models/assistant-user-interaction/00-problem-frame.md
+    boundary_and_scope: process-models/assistant-user-interaction/01-boundary-and-scope.md
+    current_openai_process: process-models/assistant-user-interaction/02-current-openai-process.md
+    viewpoint_bundle: process-models/assistant-user-interaction/03-viewpoint-bundle.md
+    api_to_protocol_mapping: process-models/assistant-user-interaction/04-api-to-protocol-term-mapping.md
+    target_process: process-models/assistant-user-interaction/05-target-fpf-mediated-process.md
+    open_questions: process-models/assistant-user-interaction/06-open-questions.md
+    evidence_register: process-models/assistant-user-interaction/evidence-register.yaml
+
 protocols:
   simple_medium:
     checklist: protocols/checklists/simple-medium.md

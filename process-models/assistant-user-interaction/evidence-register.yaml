@@ -1,0 +1,89 @@
+schema_version: 1
+process_model: assistant-user-interaction
+purpose: >
+  Source register for claims about the current OpenAI-facing assistant-user
+  interaction process and the target FPF-mediated Codex process.
+
+sources:
+  - id: openai-model-spec-latest
+    title: OpenAI Model Spec
+    url: https://raw.githubusercontent.com/openai/model_spec/main/model_spec.md
+    source_type: official_specification_repository
+    checked_on: 2026-05-23
+    supports:
+      - message roles as OpenAI API-facing terminology
+      - conversation as list of messages
+      - instruction authority hierarchy
+      - tool messages and assistant tool calls
+      - distinction between assistant, developer, user, and tool
+    notes: >
+      The rendered archive page at https://model-spec.openai.com/2025-12-18.html
+      states that a newer version may be available. The GitHub main branch is
+      used here as the latest official source checked during this change.
+
+  - id: openai-text-generation-guide
+    title: OpenAI Text generation guide
+    url: https://developers.openai.com/api/docs/guides/text
+    source_type: official_documentation
+    checked_on: 2026-05-23
+    supports:
+      - Responses API input examples with developer and user messages
+      - developer messages prioritized ahead of user messages
+      - assistant messages as model-generated messages
+      - developer/user message analogy to function definition and arguments
+
+  - id: openai-conversation-state-guide
+    title: OpenAI Conversation state guide
+    url: https://developers.openai.com/api/docs/guides/conversation-state
+    source_type: official_documentation
+    checked_on: 2026-05-23
+    supports:
+      - previous_response_id continuation
+      - conversation object as durable state
+      - conversation items including messages, tool calls, and tool outputs
+      - context window and state-management constraints
+
+  - id: openai-file-inputs-guide
+    title: OpenAI File inputs guide
+    url: https://developers.openai.com/api/docs/guides/file-inputs
+    source_type: official_documentation
+    checked_on: 2026-05-23
+    supports:
+      - input_file items
+      - file URL, file ID, and base64 file input modes
+      - input_text and input_file content parts in a user message
+
+  - id: openai-codex-page
+    title: OpenAI Codex developer page
+    url: https://developers.openai.com/codex
+    source_type: official_documentation
+    checked_on: 2026-05-23
+    supports:
+      - Codex as OpenAI coding agent for software development
+
+  - id: fpf-spec-cache
+    title: First Principles Framework specification
+    local_path: /Users/macbook/.codex/cache/fpf-spec-mirror/FPF-Spec.md
+    source_type: local_cached_specification
+    checked_on: 2026-05-23
+    commit: 2cf02f22d9c06398945ee03670652a79506ffd36
+    supports:
+      - bounded context
+      - system, episteme, carrier, described entity distinctions
+      - role assignment
+      - method/work alignment
+      - strict distinction
+      - viewpoint bundle
+      - evidence graph
+
+  - id: fpf-codex-protocols
+    title: FPF Codex protocols
+    repository: ansea09/fpf-codex-protocols
+    source_type: local_repository
+    checked_on: 2026-05-23
+    commit_before_change: fd5e4f556bf588f684372c107f199c059bd8435e
+    supports:
+      - protocol classification
+      - routing
+      - checklist execution
+      - cache fallback policy

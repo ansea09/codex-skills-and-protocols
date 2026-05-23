@@ -28,4 +28,5 @@ Before any substantive answer, code edit, review, research task, plan, or delega
 - [protocols/checklists/complex/00-master.md](protocols/checklists/complex/00-master.md) - mandatory complex checklist bundle.
 - [protocols/sop/simple-medium-sop.md](protocols/sop/simple-medium-sop.md) - explanations for the short checklist.
 - [protocols/sop/complex-sop.md](protocols/sop/complex-sop.md) - explanations for the complex checklist bundle.
+- [process-models/](process-models/) - reference process models, including the assistant-user interaction model used to align OpenAI/API-facing terms with protocol-local terms.
 - [examples/](examples/) - worked examples.
