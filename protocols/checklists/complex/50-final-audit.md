@@ -8,5 +8,6 @@ Every item must be marked `done`, `not_applicable: reason`, or `blocked: reason`
 - [ ] Check whether another route could reasonably produce a different answer.
 - [ ] Check whether any user preference conflicts with higher-priority instructions.
 - [ ] Include engineering basis: FPF commit, protocol commit, patterns used, sources used, sources not used, and residual risk.
+- [ ] Remove FPF-specific language and answer on the domain language. FPF patterns should be under the hood of your answer unless the user claimed to give him an answer on the FPF language.
 - [ ] If the user requested quality monitoring, comment on observable answer-quality drift only from available context.
 - [ ] Mark completion: `50 Final Audit complete`.
