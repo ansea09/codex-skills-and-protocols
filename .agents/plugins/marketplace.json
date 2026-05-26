@@ -1,0 +1,20 @@
+{
+  "name": "codex-skills-and-protocols",
+  "interface": {
+    "displayName": "Codex Skills and Protocols"
+  },
+  "plugins": [
+    {
+      "name": "fpf-latest",
+      "source": {
+        "source": "local",
+        "path": "./plugins/fpf-latest"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

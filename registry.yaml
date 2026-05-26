@@ -1,10 +1,10 @@
 schema_version: 1
-repository: ansea09/fpf-codex-protocols
+repository: ansea09/codex-skills-and-protocols
 default_branch: main
 purpose: >
   Codex procedure layer for current FPF-backed task classification,
   protocol routing, mandatory checklist execution, SOP explanations,
-  examples, and engineering-basis disclosure.
+  examples, engineering-basis disclosure, and staged skill publication.
 
 freshness_policy:
   update_on_start: true
@@ -28,7 +28,17 @@ canonical_files:
   examples:
     simple_medium: examples/simple-medium-example.md
     complex: examples/complex-example.md
+    use_cases: examples/use-cases.md
   execution_record_template: templates/protocol-execution-record.yaml
+  skills_index: skills-index.md
+  skill_artifact_model: docs/skill-artifact-model.md
+  skill_install_instructions: docs/install.md
+  skill_validation_instructions: docs/validation.md
+  skill_promotion_workflow: docs/workflows/promote-local-skills.md
+  skill_promotion_manifest: skills/promote-manifest.yaml
+
+skills:
+  fpf_latest: skills/fpf-latest/SKILL.md
 
 process_models:
   assistant_user_interaction:

@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# Local FPF refresh state; never publish as repository content.
+.fpf-update/
+
+# Personal/local policy notes; keep outside the public repository artifact.
+private/

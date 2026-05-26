@@ -1,0 +1,20 @@
+schema_version: 1
+method: promote-local-skills-to-public-staged-skills
+source_root: "${CODEX_HOME:-$HOME/.codex}/skills"
+target_root: "skills"
+
+skills:
+  - name: fpf-latest
+    mode: auto
+    reason: "Public copy can be generated from the local working skill after generated artifacts and private markers are removed."
+
+exclude_artifacts:
+  - ".DS_Store"
+  - "__pycache__"
+  - "*.pyc"
+
+required_checks:
+  - structural_validation
+  - private_marker_scan
+  - skills_index_coverage
+  - manual_git_diff_review
