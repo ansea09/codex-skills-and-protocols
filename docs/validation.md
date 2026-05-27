@@ -35,7 +35,8 @@ Manual review checklist:
 - Installation docs distinguish modern Codex skill discovery locations such as `.agents/skills` from local legacy/current compatibility paths such as `${CODEX_HOME:-$HOME/.codex}/skills`.
 - Installation docs state that plugins are the distribution path for reusable skills shared beyond local authoring or a single repo-scoped workflow.
 - `fpf-latest` states its compatibility contract: Codex/macOS-first, Bash and Git required for refresh, cache fallback supported, WSL supported, Git Bash best effort, native PowerShell/CMD unsupported until a separate implementation exists.
-- `fpf-latest` does not require hard-coded `$HOME/.codex` invocation when installed for Claude Code or another non-Codex agent; the docs show `FPF_LATEST_SKILL_DIR` and optional `FPF_CACHE_HOME`.
+- `fpf-latest` does not require hard-coded `$HOME/.codex`, `$HOME/.agents`, or `$PWD/.fpf-update` invocation when installed for Claude Code or another non-Codex agent; the docs show `FPF_LATEST_SKILL_DIR`, `FPF_CACHE_HOME`, and `FPF_UPDATE_STATE_DIR`.
+- `fpf-latest` doctor output reports path modes for skill, cache, state, and overall path policy.
 - `fpf-latest` protects `git reset --hard` behind a dedicated-cache guard for nonstandard cache paths.
 - Personal automation around `fpf-latest` is documented as local infrastructure, not as a public skill overlay or staged skill dependency.
 - Symlinked workspaces use explicit `FPF_UPDATE_STATE_DIR` in launchers/hooks when stable human-facing diagnostics matter.

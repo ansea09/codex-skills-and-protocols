@@ -40,3 +40,12 @@ For a portable install check after installation:
 ```bash
 bash "$PLUGIN_ROOT/skills/fpf-latest/scripts/fpf-latest-doctor" --write-state
 ```
+
+For non-default portable runs, set explicit skill, cache, and state paths instead of relying on `$HOME/.codex`, `$HOME/.agents`, or `$PWD/.fpf-update`:
+
+```bash
+FPF_LATEST_SKILL_DIR="$PLUGIN_ROOT/skills/fpf-latest" \
+FPF_CACHE_HOME="/absolute/path/to/fpf-cache" \
+FPF_UPDATE_STATE_DIR="/absolute/path/to/fpf-state" \
+bash "$FPF_LATEST_SKILL_DIR/scripts/update_fpf_context.sh"
+```

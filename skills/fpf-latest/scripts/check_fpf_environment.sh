@@ -104,6 +104,15 @@ path_mtime_epoch() {
   stat -f %m "$path" 2>/dev/null || stat -c %Y "$path" 2>/dev/null || printf 'missing'
 }
 
+path_identity() {
+  local path="$1"
+  if [ -d "$path" ]; then
+    (cd "$path" 2>/dev/null && pwd) || printf '%s' "$path"
+  else
+    printf '%s' "$path"
+  fi
+}
+
 compare_state_field() {
   local key="$1"
   local current="$2"
@@ -119,7 +128,14 @@ write_state() {
   {
     printf 'CODEX_HOME_DIR=%s\n' "$CODEX_HOME_DIR"
     printf 'SKILL_DIR=%s\n' "$SKILL_DIR"
+    printf 'SKILL_PATH_MODE=%s\n' "$SKILL_PATH_MODE"
     printf 'DEFAULT_CACHE_HOME=%s\n' "$DEFAULT_CACHE_HOME"
+    printf 'SPEC_CACHE_DIR=%s\n' "$SPEC_CACHE_DIR"
+    printf 'PROTOCOLS_CACHE_DIR=%s\n' "$PROTOCOLS_CACHE_DIR"
+    printf 'CACHE_PATH_MODE=%s\n' "$CACHE_PATH_MODE"
+    printf 'STATE_DIR=%s\n' "$STATE_DIR"
+    printf 'STATE_PATH_MODE=%s\n' "$STATE_PATH_MODE"
+    printf 'PATH_POLICY_MODE=%s\n' "$PATH_POLICY_MODE"
     printf 'CODEX_APP_PATH=%s\n' "$CODEX_APP_PATH"
     printf 'CODEX_APP_FINGERPRINT=%s\n' "$CODEX_APP_FINGERPRINT"
     printf 'OS_NAME=%s\n' "$OS_NAME"
@@ -155,6 +171,54 @@ GIT_STATUS="missing"
 if [ "$GIT_PATH" != "missing" ]; then
   GIT_STATUS="available"
   GIT_VERSION_VALUE="$(command_version git)"
+fi
+
+CODEX_SKILL_DIR="$CODEX_HOME_DIR/skills/fpf-latest"
+AGENTS_USER_SKILL_DIR="$HOME/.agents/skills/fpf-latest"
+SKILL_DIR_ID="$(path_identity "$SKILL_DIR")"
+CODEX_SKILL_DIR_ID="$(path_identity "$CODEX_SKILL_DIR")"
+AGENTS_USER_SKILL_DIR_ID="$(path_identity "$AGENTS_USER_SKILL_DIR")"
+
+if [ "$SKILL_DIR_ID" = "$CODEX_SKILL_DIR_ID" ]; then
+  SKILL_PATH_MODE="codex-home-default"
+elif [ "$SKILL_DIR_ID" = "$AGENTS_USER_SKILL_DIR_ID" ]; then
+  SKILL_PATH_MODE="agents-user-default"
+else
+  SKILL_PATH_MODE="explicit-or-nondefault"
+fi
+
+if [ -n "${FPF_SPEC_CACHE_DIR+x}" ] || [ -n "${FPF_PROTOCOLS_CACHE_DIR+x}" ]; then
+  CACHE_PATH_MODE="split-cache-override"
+elif [ -n "${FPF_CACHE_HOME+x}" ]; then
+  CACHE_PATH_MODE="cache-home-override"
+elif [ -n "${CODEX_HOME+x}" ]; then
+  CACHE_PATH_MODE="codex-home-override-cache"
+else
+  CACHE_PATH_MODE="codex-home-default-cache"
+fi
+
+if [ -n "${FPF_ENV_STATE_FILE+x}" ]; then
+  STATE_PATH_MODE="state-file-override"
+elif [ -n "${FPF_ENV_STATE_DIR+x}" ]; then
+  STATE_PATH_MODE="env-state-dir-override"
+elif [ -n "${FPF_REFRESH_STATE_DIR+x}" ]; then
+  STATE_PATH_MODE="refresh-state-dir-override"
+elif [ -n "${FPF_UPDATE_STATE_DIR+x}" ]; then
+  STATE_PATH_MODE="update-state-dir-override"
+else
+  STATE_PATH_MODE="workspace-default"
+fi
+
+if [ "$SKILL_PATH_MODE" = "codex-home-default" ] \
+  && [ "$CACHE_PATH_MODE" = "codex-home-default-cache" ] \
+  && [ "$STATE_PATH_MODE" = "workspace-default" ]; then
+  PATH_POLICY_MODE="codex-defaults"
+elif [ "$SKILL_PATH_MODE" = "explicit-or-nondefault" ] \
+  && { [ "$CACHE_PATH_MODE" = "cache-home-override" ] || [ "$CACHE_PATH_MODE" = "split-cache-override" ]; } \
+  && [ "$STATE_PATH_MODE" != "workspace-default" ]; then
+  PATH_POLICY_MODE="portable-explicit"
+else
+  PATH_POLICY_MODE="mixed"
 fi
 
 for utility in update_fpf_context.sh update_fpf_spec.sh update_fpf_protocols.sh check_fpf_environment.sh fpf-latest-doctor; do
@@ -255,7 +319,14 @@ else
   changed_fields=""
   compare_state_field CODEX_HOME_DIR "$CODEX_HOME_DIR" || changed_fields="$(append_list_item "$changed_fields" CODEX_HOME_DIR)"
   compare_state_field SKILL_DIR "$SKILL_DIR" || changed_fields="$(append_list_item "$changed_fields" SKILL_DIR)"
+  compare_state_field SKILL_PATH_MODE "$SKILL_PATH_MODE" || changed_fields="$(append_list_item "$changed_fields" SKILL_PATH_MODE)"
   compare_state_field DEFAULT_CACHE_HOME "$DEFAULT_CACHE_HOME" || changed_fields="$(append_list_item "$changed_fields" DEFAULT_CACHE_HOME)"
+  compare_state_field SPEC_CACHE_DIR "$SPEC_CACHE_DIR" || changed_fields="$(append_list_item "$changed_fields" SPEC_CACHE_DIR)"
+  compare_state_field PROTOCOLS_CACHE_DIR "$PROTOCOLS_CACHE_DIR" || changed_fields="$(append_list_item "$changed_fields" PROTOCOLS_CACHE_DIR)"
+  compare_state_field CACHE_PATH_MODE "$CACHE_PATH_MODE" || changed_fields="$(append_list_item "$changed_fields" CACHE_PATH_MODE)"
+  compare_state_field STATE_DIR "$STATE_DIR" || changed_fields="$(append_list_item "$changed_fields" STATE_DIR)"
+  compare_state_field STATE_PATH_MODE "$STATE_PATH_MODE" || changed_fields="$(append_list_item "$changed_fields" STATE_PATH_MODE)"
+  compare_state_field PATH_POLICY_MODE "$PATH_POLICY_MODE" || changed_fields="$(append_list_item "$changed_fields" PATH_POLICY_MODE)"
   compare_state_field CODEX_APP_PATH "$CODEX_APP_PATH" || changed_fields="$(append_list_item "$changed_fields" CODEX_APP_PATH)"
   compare_state_field CODEX_APP_FINGERPRINT "$CODEX_APP_FINGERPRINT" || changed_fields="$(append_list_item "$changed_fields" CODEX_APP_FINGERPRINT)"
   compare_state_field OS_NAME "$OS_NAME" || changed_fields="$(append_list_item "$changed_fields" OS_NAME)"
@@ -333,7 +404,14 @@ fi
 printf 'FPF_ENV_CHECK_STATUS=%s\n' "$STATUS"
 printf 'FPF_ENV_CHECK_REASON=%s\n' "$REASON"
 printf 'FPF_ENV_CHECK_SKILL_DIR=%s\n' "$SKILL_DIR"
+printf 'FPF_ENV_CHECK_SKILL_PATH_MODE=%s\n' "$SKILL_PATH_MODE"
 printf 'FPF_ENV_CHECK_CACHE_HOME=%s\n' "$DEFAULT_CACHE_HOME"
+printf 'FPF_ENV_CHECK_SPEC_CACHE_DIR=%s\n' "$SPEC_CACHE_DIR"
+printf 'FPF_ENV_CHECK_PROTOCOLS_CACHE_DIR=%s\n' "$PROTOCOLS_CACHE_DIR"
+printf 'FPF_ENV_CHECK_CACHE_PATH_MODE=%s\n' "$CACHE_PATH_MODE"
+printf 'FPF_ENV_CHECK_STATE_DIR=%s\n' "$STATE_DIR"
+printf 'FPF_ENV_CHECK_STATE_PATH_MODE=%s\n' "$STATE_PATH_MODE"
+printf 'FPF_ENV_CHECK_PATH_POLICY_MODE=%s\n' "$PATH_POLICY_MODE"
 printf 'FPF_ENV_CHECK_CODEX_APP_PATH=%s\n' "$CODEX_APP_PATH"
 printf 'FPF_ENV_CHECK_CODEX_APP_FINGERPRINT=%s\n' "$CODEX_APP_FINGERPRINT"
 printf 'FPF_ENV_CHECK_STATE_STATUS=%s\n' "$STATE_STATUS"

@@ -16,6 +16,7 @@ compatibility:
     - "standard Unix utilities: awk, date, dirname, mkdir, mv, rmdir, stat, uname"
   network_requirement: "GitHub network access is required only when a refresh is due, forced, or no valid cache exists."
   cache_fallback: "Supported when FPF and protocol caches already exist; disclose cached/fresh status."
+  path_policy: "$HOME/.codex, $HOME/.agents, and $PWD/.fpf-update are defaults only; portable installs should set explicit skill, cache, and state paths."
 ---
 
 # FPF Latest
@@ -30,6 +31,32 @@ Supported runtime contract:
 - Claude Code or another agent: supported only when the whole `fpf-latest` directory is installed and the refresh gate is invoked from that installed directory.
 - Windows: WSL Bash is supported; Git Bash is best effort; native PowerShell/CMD is not supported until a separate PowerShell implementation exists.
 - Fresh refresh requires Git and network access to GitHub. If GitHub is unavailable but a valid cache exists, use the current cached copy and disclose that status.
+
+## Path Policy
+
+`$HOME/.codex`, `$HOME/.agents`, and `$PWD/.fpf-update` are defaults, not a portable installation contract.
+
+Use them when they match the local agent runtime. For portable invocation, make skill, cache, and state locations explicit:
+
+```bash
+FPF_LATEST_SKILL_DIR="/absolute/path/to/fpf-latest" \
+FPF_CACHE_HOME="/absolute/path/to/fpf-cache" \
+FPF_UPDATE_STATE_DIR="/absolute/path/to/fpf-state" \
+bash "$FPF_LATEST_SKILL_DIR/scripts/update_fpf_context.sh"
+```
+
+Path responsibilities:
+
+- `FPF_LATEST_SKILL_DIR`: where the installed `fpf-latest` skill directory lives.
+- `FPF_CACHE_HOME`: shared root for FPF specification and protocol caches.
+- `FPF_SPEC_CACHE_DIR`: optional exact cache path for the FPF specification mirror; takes precedence over `FPF_CACHE_HOME`.
+- `FPF_PROTOCOLS_CACHE_DIR`: optional exact cache path for the protocol repository; takes precedence over `FPF_CACHE_HOME`.
+- `FPF_UPDATE_STATE_DIR`: durable refresh and environment state directory for portable runs.
+- `FPF_REFRESH_STATE_DIR`: optional refresh-state directory; takes precedence over `FPF_UPDATE_STATE_DIR` for refresh state.
+- `FPF_ENV_STATE_DIR`: optional environment-state directory; takes precedence over `FPF_UPDATE_STATE_DIR` for environment state.
+- `FPF_ENV_STATE_FILE`: optional exact environment-state file for doctor or environment checks.
+
+Use explicit state paths for read-only, symlinked, shared, ephemeral, or non-workspace shells. Do not rely on `$PWD/.fpf-update` in those cases.
 
 ## Required First Move
 
@@ -104,7 +131,14 @@ Read the script output:
 - `FPF_ENV_CHECK_STATE_PATH`: local path to the environment state file
 - `FPF_ENV_CHECK_STATE_DETAIL`: short explanation of the environment state result
 - `FPF_ENV_CHECK_SKILL_DIR`: resolved local skill directory
+- `FPF_ENV_CHECK_SKILL_PATH_MODE`: `codex-home-default`, `agents-user-default`, or `explicit-or-nondefault`
 - `FPF_ENV_CHECK_CACHE_HOME`: cache root used by default when specific cache paths are not passed
+- `FPF_ENV_CHECK_SPEC_CACHE_DIR`: resolved FPF specification cache directory
+- `FPF_ENV_CHECK_PROTOCOLS_CACHE_DIR`: resolved FPF protocol repository cache directory
+- `FPF_ENV_CHECK_CACHE_PATH_MODE`: `codex-home-default-cache`, `codex-home-override-cache`, `cache-home-override`, or `split-cache-override`
+- `FPF_ENV_CHECK_STATE_DIR`: resolved environment state directory
+- `FPF_ENV_CHECK_STATE_PATH_MODE`: `workspace-default`, `update-state-dir-override`, `refresh-state-dir-override`, `env-state-dir-override`, or `state-file-override`
+- `FPF_ENV_CHECK_PATH_POLICY_MODE`: `codex-defaults`, `portable-explicit`, or `mixed`
 - `FPF_ENV_CHECK_CODEX_APP_PATH`, `FPF_ENV_CHECK_CODEX_APP_FINGERPRINT`: optional macOS Codex app bundle path and filesystem fingerprint used to detect local app replacement when available
 - `FPF_ENV_CHECK_OS_NAME`, `FPF_ENV_CHECK_OS_ARCH`: detected platform values
 - `FPF_ENV_CHECK_BASH_PATH`, `FPF_ENV_CHECK_BASH_VERSION`: Bash used by the skill scripts

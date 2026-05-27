@@ -150,7 +150,47 @@ The gate must distinguish an active refresh lock from an unavailable state direc
 
 When state is unavailable but cache-only validation succeeds, the gate may continue with the current cached copy and disclose that durable refresh state was not written. When state is unavailable and cache-only validation fails, FPF-backed work is blocked until the user fixes permissions or sets `FPF_UPDATE_STATE_DIR`, `FPF_REFRESH_STATE_DIR`, or `FPF_ENV_STATE_DIR` to a writable directory.
 
-### 11. Keep compatibility honest
+### 11. Treat path defaults as replaceable defaults
+
+The public skill must not treat `$HOME/.codex`, `$HOME/.agents`, or `$PWD/.fpf-update` as mandatory portable paths.
+
+They are defaults for common local setups:
+
+- `$HOME/.codex` is a Codex compatibility default and may provide the default cache root through `${CODEX_HOME:-$HOME/.codex}/cache`.
+- `$HOME/.agents` is a user-scoped skill discovery default for runtimes that load skills there.
+- `$PWD/.fpf-update` is a workspace-local state default for refresh and environment state.
+
+Portable invocation should set explicit paths:
+
+```bash
+FPF_LATEST_SKILL_DIR="/absolute/path/to/fpf-latest" \
+FPF_CACHE_HOME="/absolute/path/to/fpf-cache" \
+FPF_UPDATE_STATE_DIR="/absolute/path/to/fpf-state" \
+bash "$FPF_LATEST_SKILL_DIR/scripts/update_fpf_context.sh"
+```
+
+Specific cache directories may override the shared cache root:
+
+- `FPF_SPEC_CACHE_DIR`
+- `FPF_PROTOCOLS_CACHE_DIR`
+
+Specific state directories may override the workspace-local state default:
+
+- `FPF_UPDATE_STATE_DIR`
+- `FPF_REFRESH_STATE_DIR`
+- `FPF_ENV_STATE_DIR`
+- `FPF_ENV_STATE_FILE`
+
+Read-only, symlinked, shared, ephemeral, or non-workspace shells should not rely on `$PWD/.fpf-update`. They should set an explicit state directory.
+
+The environment check reports path modes so agents and maintainers can see which path policy is active:
+
+- `FPF_ENV_CHECK_SKILL_PATH_MODE`
+- `FPF_ENV_CHECK_CACHE_PATH_MODE`
+- `FPF_ENV_CHECK_STATE_PATH_MODE`
+- `FPF_ENV_CHECK_PATH_POLICY_MODE`
+
+### 12. Keep compatibility honest
 
 The primary runtime is Codex on macOS.
 
@@ -164,13 +204,13 @@ Supported or documented modes:
 
 Fresh refresh requires Bash, Git, standard Unix utilities, and GitHub network access. Cache fallback is supported when valid local caches exist.
 
-### 12. Use explicit state paths for symlinked workspaces
+### 13. Use explicit state paths for symlinked workspaces
 
 When a workspace path is a symlink, diagnostics may alternate between the human-facing path and the resolved physical path.
 
 Launchers and hooks should pass `FPF_UPDATE_STATE_DIR` explicitly when stable human-facing diagnostics and migration notes matter.
 
-### 13. Separate session-start automation from skill execution
+### 14. Separate session-start automation from skill execution
 
 The skill itself does not detect "Codex session start" as an application lifecycle event.
 
@@ -178,7 +218,7 @@ Session-start refresh is implemented by an external launcher or hook that runs b
 
 The launcher or hook is personal automation. It may be documented as an example, but it is not required by the public skill or plugin artifact.
 
-### 14. Use human-readable diagnostics only when they change user action or trust
+### 15. Use human-readable diagnostics only when they change user action or trust
 
 Diagnostics should use this shape:
 
@@ -201,7 +241,7 @@ Detailed user-facing diagnostics are required only when:
 
 Routine TTL skips belong in the engineering basis, not as prominent warnings.
 
-### 15. Use a doc-sync gate for method and architecture changes
+### 16. Use a doc-sync gate for method and architecture changes
 
 Architecture-significant changes to `fpf-latest` must not silently drift away from documentation.
 
@@ -229,6 +269,7 @@ The public skill and plugin must not depend on this private doc-sync gate. The g
 - Cached/fresh status is explicit, which avoids false "latest" claims.
 - Chunk-first reads keep FPF-backed answers focused and reduce reliance on large full-spec scans.
 - State-directory failures are diagnosed as state problems rather than mislabeled as active refreshes.
+- Path defaults are explicit and overrideable, which makes portable installs auditable instead of relying on hidden `$HOME` or workspace assumptions.
 - Destructive Git operations are constrained to known cache repositories.
 - Plugin distribution gives another user a clean installation boundary.
 
@@ -239,6 +280,7 @@ The public skill and plugin must not depend on this private doc-sync gate. The g
 - Session-start refresh depends on external launcher or hook setup; the public skill does not guarantee application lifecycle automation by itself.
 - The plugin artifact must be kept in sync with the staged skill copy.
 - Multiple state locations can exist at once, so diagnostics must disclose which state file controlled a refresh decision.
+- Additional path-mode fields make doctor output longer, but they make portability decisions inspectable.
 - Diagnostics are intentionally selective, so routine cache use is visible in engineering basis rather than always shown as a prominent message.
 - Method and architecture changes gain a local documentation drift check, but the check still requires human or agent review of the actual content.
 
@@ -280,6 +322,7 @@ Manual review must verify:
 - cached/fresh wording is preserved
 - layout manifest parsing stays key/value based and never sources the manifest as shell code
 - unavailable refresh state is reported as `state-dir-unavailable`, not `active-refresh`
+- portable path modes report the active skill/cache/state policy
 - plugin artifact and marketplace entry still point to the public skill
 - `git reset --hard` remains guarded behind dedicated-cache checks
 - symlink-sensitive launchers or hooks pass `FPF_UPDATE_STATE_DIR` explicitly when needed
