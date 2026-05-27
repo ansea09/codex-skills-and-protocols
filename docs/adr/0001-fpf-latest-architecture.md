@@ -64,6 +64,8 @@ Otherwise it validates and uses the current cached copy without contacting GitHu
 
 The default TTL is 6 hours (`21600` seconds). A session-start launcher or hook may force refresh on startup, but normal skill invocation must not fetch on every use.
 
+The public task-admission threshold, substantive-task definition, and event vocabulary are defined in [../fpf-latest-behavior-model.md](../fpf-latest-behavior-model.md). In short, a raw user message is not itself the start event for the public skill; the public skill boundary starts at agent-side admission of a normalized task as substantive work.
+
 ### 5. Never call cached content "latest"
 
 When `FPF_SPEC_STATUS=cached` or `FPF_PROTOCOLS_STATUS=cached`, answers and diagnostics must say `current cached copy`, not `latest`.
