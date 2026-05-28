@@ -1,44 +1,40 @@
 # Codex Skills and Protocols
 
-Русская версия README для репозитория с installable Codex skills, plugin packages и FPF-backed protocol docs.
-
-Используйте этот репозиторий, если хотите:
-
-- установить reusable Codex skill;
-- установить skill как Codex plugin;
-- установить Claude Code profile для поддерживаемого public skill;
-- посмотреть, как skill упакован перед использованием;
-- открыть issue или PR по установке, документации или portability;
-- адаптировать публичный skill под свой workflow без копирования приватного локального состояния.
-
 English version: [`README.md`](README.md)
 
-## Что можно установить
+Этот репозиторий публикует reusable skills для Codex, plugin packages для Codex, install profiles для Claude Code и документацию по FPF-backed protocols.
 
-| Skill | Что делает | Когда использовать | С чего начать |
-| --- | --- | --- | --- |
-| [`fpf-work-guide`](skills/fpf-work-guide/) | Помогает Codex готовить более точные и проверяемые ответы: перед содержательной работой Codex валидирует текущий FPF-контекст и применяет FPF-протоколы. | FPF-backed reasoning, планирование, review, coding и source-backed answers. | [`skills/fpf-work-guide/README.md`](skills/fpf-work-guide/README.md) или [`plugins/fpf-work-guide`](plugins/fpf-work-guide/) |
-| [`doc-to-md`](skills/doc-to-md/) | Конвертирует trusted local documents в Markdown через MarkItDown, с optional PDF audit bundles и optional OCR preprocessing. | Локальная конвертация документов, textbook-like PDF audit, OCR для scanned PDF, Markdown intermediate перед анализом. | [`skills/doc-to-md/README.md`](skills/doc-to-md/README.md) или [`plugins/doc-to-md`](plugins/doc-to-md/) |
+Используйте его, если хотите:
 
-Полный список skills: [`skills-index.md`](skills-index.md).
+- установить публичный skill для Codex;
+- установить Codex plugin, который включает публичный skill;
+- установить Claude Code profile для поддерживаемого публичного skill;
+- понять, чем отличаются skill source, plugin package, runtime и локальное состояние;
+- предложить правку без публикации приватных локальных настроек.
 
-## Самый простой способ установки
+## Что установить
 
-Если вы не хотите вручную разбираться с командами, используйте prompt-first guide:
+| Задача | Что установить | С чего начать |
+| --- | --- | --- |
+| Чтобы Codex проверял актуальный FPF-контекст и применял FPF-backed protocols перед содержательной работой | `fpf-work-guide` | [`skills/fpf-work-guide/README.md`](skills/fpf-work-guide/README.md) |
+| Чтобы конвертировать локальные документы в Markdown | `doc-to-md` | [`skills/doc-to-md/README.md`](skills/doc-to-md/README.md) |
+| Чтобы установить skill через упаковку Codex plugin | Codex plugin package | [`plugins/`](plugins/) |
+| Чтобы использовать поддерживаемый публичный skill в Claude Code | Claude Code source-only profile | [`claude-code/`](claude-code/) |
 
-[`docs/install-plugins-for-nontechnical-users.md`](docs/install-plugins-for-nontechnical-users.md)
+Публичные skills:
 
-Это инструкция на русском языке. Она даёт один готовый prompt для Codex. Codex сам проверит вашу среду, попросит разрешения на установку и покажет итог.
+| Skill | Что делает |
+| --- | --- |
+| [`fpf-work-guide`](skills/fpf-work-guide/) | Проверяет или обновляет локальный FPF-контекст и применяет FPF-backed protocols перед содержательной работой Codex. |
+| [`doc-to-md`](skills/doc-to-md/) | Конвертирует trusted local files в Markdown через MarkItDown, с optional PDF audit bundles и optional OCR preprocessing. |
 
-Рекомендуемый выбор для большинства пользователей: установить только `fpf-work-guide`.
+Полный список: [`skills-index.md`](skills-index.md).
 
-`doc-to-md` устанавливайте дополнительно только если вам нужна конвертация PDF, Word, Excel, PowerPoint, HTML, CSV, JSON, XML или ZIP-файлов в Markdown.
+## Самый простой путь
 
-## Установка через plugin
+Большинству пользователей Codex стоит начать с `fpf-work-guide`.
 
-Plugin installation - основной способ распространения skills для других пользователей.
-
-Репозиторий содержит локальный plugin marketplace:
+Если ваш Codex поддерживает repo-local plugin marketplace discovery, используйте plugin package:
 
 ```text
 .agents/plugins/marketplace.json
@@ -46,29 +42,20 @@ Plugin installation - основной способ распространени
 
 Доступные plugin packages:
 
-- [`plugins/fpf-work-guide`](plugins/fpf-work-guide/) - plugin package для публичного `fpf-work-guide` skill.
-- [`plugins/doc-to-md`](plugins/doc-to-md/) - plugin package для публичного `doc-to-md` skill.
+- [`plugins/fpf-work-guide`](plugins/fpf-work-guide/)
+- [`plugins/doc-to-md`](plugins/doc-to-md/)
 
-Если ваш Codex поддерживает repo-local plugin marketplace discovery, подключите marketplace из этого репозитория. Для нетехнической установки используйте готовый prompt из [`docs/install-plugins-for-nontechnical-users.md`](docs/install-plugins-for-nontechnical-users.md).
+Если plugin marketplace discovery недоступен, установите skill вручную.
 
-## Установка в Claude Code
+Для нетехнической установки через готовый prompt используйте:
 
-Claude Code использует другие extension mechanisms, не Codex plugins. Для
-Claude Code используйте source-only install profiles:
+[`docs/install-plugins-for-nontechnical-users.md`](docs/install-plugins-for-nontechnical-users.md)
 
-[`claude-code/`](claude-code/)
+## Ручная установка для Codex
 
-Текущий профиль:
+Ручная установка копирует public skill source в директорию, из которой ваш local agent runtime читает skills.
 
-- [`claude-code/fpf-work-guide`](claude-code/fpf-work-guide/) - устанавливает
-  Claude Code slash commands и subagent, которые вызывают публичный
-  `fpf-work-guide` skill.
-
-## Ручная установка
-
-Ручная установка копирует staged public skill в директорию, из которой ваш agent runtime читает skills.
-
-Recommended user-scoped Codex target:
+Рекомендуемая user-scoped директория:
 
 ```bash
 export CODEX_SKILLS_TARGET="${CODEX_SKILLS_TARGET:-$HOME/.agents/skills}"
@@ -89,28 +76,33 @@ cp -R skills/doc-to-md "$CODEX_SKILLS_TARGET/"
 bash "$CODEX_SKILLS_TARGET/doc-to-md/scripts/install.sh"
 ```
 
-Для legacy/current local Codex setups, которые всё ещё читают skills из `${CODEX_HOME:-$HOME/.codex}/skills`, а также для Claude Code, WSL и нестандартных путей используйте подробную инструкцию:
+Для legacy Codex setups, которые всё ещё читают skills из `${CODEX_HOME:-$HOME/.codex}/skills`, а также для WSL и нестандартных путей используйте [`docs/install.md`](docs/install.md).
 
-[`docs/install.md`](docs/install.md)
+## Установка в Claude Code
 
-## Поддержка платформ
+Claude Code не использует Codex plugins. Для Claude Code используйте source-only install profiles из [`claude-code/`](claude-code/).
 
-`fpf-work-guide`:
+Текущий профиль:
 
-- основной поддерживаемый путь: Codex на macOS;
-- Windows PowerShell/CMD path реализован, но пока считается experimental/unverified до отдельной Windows validation lane;
-- WSL Bash path возможен;
-- для fresh refresh нужен `git` и доступ к GitHub.
+- [`claude-code/fpf-work-guide`](claude-code/fpf-work-guide/) устанавливает Claude Code slash commands и subagent, которые вызывают публичный `fpf-work-guide` skill.
 
-`doc-to-md`:
+## Что устанавливается локально
 
-- основной поддерживаемый путь: Codex на macOS arm64;
-- runtime не входит в plugin и собирается локально;
-- Windows native сейчас unsupported;
-- WSL candidate/unsupported;
-- macOS на другой архитектуре требует проверки runtime profile.
+В этом репозитории разделены source, packaging, runtime dependencies и generated files.
 
-## Если что-то не установилось
+| Слой | Примеры | Публикуется здесь? |
+| --- | --- | --- |
+| Public skill source | `skills/fpf-work-guide`, `skills/doc-to-md` | Да |
+| Codex plugin package | `plugins/fpf-work-guide`, `plugins/doc-to-md` | Да |
+| Claude Code profile | `claude-code/fpf-work-guide` | Да |
+| Runtime dependencies | Python virtual environments, installed command shims, OCR tools | Нет |
+| Local state and cache | `.fpf-update`, FPF caches, logs | Нет |
+| Generated outputs | Markdown files, OCR PDFs, audit bundles | Нет |
+| Private local policy | Personal defaults, private overlays, local launchers | Нет |
+
+Подробная модель: [`docs/skill-artifact-model.md`](docs/skill-artifact-model.md).
+
+## Если что-то не работает
 
 Откройте issue или PR, если столкнулись с:
 
@@ -118,68 +110,52 @@ bash "$CODEX_SKILLS_TARGET/doc-to-md/scripts/install.sh"
 - непонятной диагностикой;
 - portability-проблемой на другой ОС, shell или agent runtime;
 - ошибкой в документации;
-- предложением по адаптации skill к реальному workflow без добавления private local state в public artifact.
+- необходимой адаптацией под реальный workflow без публикации private local state.
 
-В issue укажите:
+Укажите:
 
 - имя skill или plugin;
 - ОС и runtime;
 - путь установки;
-- команду или prompt, который вы запускали;
-- итоговый diagnostic output или warning.
+- команду, которую запускали;
+- diagnostic output или warning.
 
-Для `fpf-work-guide` также укажите, работал ли skill с fresh data или с current cached copy, если это было показано в diagnostic output.
+Для `fpf-work-guide` также укажите, использовались fresh data или current cached copy, если это было показано в диагностике.
 
-## Проверка перед публикацией изменений
+## Документация для maintainers
 
-Перед публикацией или передачей изменений запустите structural checks:
+Перед публикацией или review изменений используйте:
+
+- [`docs/install.md`](docs/install.md)
+- [`docs/validation.md`](docs/validation.md)
+- [`docs/skill-artifact-model.md`](docs/skill-artifact-model.md)
+- [`docs/workflows/promote-local-skills.md`](docs/workflows/promote-local-skills.md)
+
+Перед передачей изменений запустите structural checks:
 
 ```bash
 scripts/validate-skills.sh
 scripts/validate-plugins.sh
 ```
 
-Подробнее: [`docs/validation.md`](docs/validation.md).
+Для source/plugin release `doc-to-md` также используйте release gate, описанный в [`docs/validation.md`](docs/validation.md).
 
 ## Карта репозитория
 
-| Path | Что это | Кто обычно читает |
-| --- | --- | --- |
-| [`.agents/`](.agents/) | Machine-readable Codex agent configuration. Сейчас содержит repo-local plugin marketplace metadata. | Codex/plugin tooling и maintainers. |
-| [`docs/`](docs/) | Installation docs, validation docs, architecture notes, ADRs, process models и examples. | Users, reviewers, maintainers. |
-| [`claude-code/`](claude-code/) | Source-only Claude Code install profiles для public skills. | Claude Code users и maintainers. |
-| [`plugins/`](plugins/) | Installable Codex plugin packages с публичными skills. | Пользователи plugin installation и maintainers packaging. |
-| [`protocols/`](protocols/) | FPF-backed response protocol definitions, routing rules, checklists, SOPs и templates. | Пользователи, которые хотят смотреть protocol internals. |
-| [`scripts/`](scripts/) | Validation, promotion, drift-check и release-gate scripts. | Maintainers и contributors. |
-| [`skills/`](skills/) | Public staged skill source. Это reviewable source, а не обязательно active local runtime copy. | Пользователи ручной установки и contributors. |
-| [`README.md`](README.md) | English entrypoint. | Everyone. |
-| [`README.ru.md`](README.ru.md) | Русский entrypoint. | Russian-speaking users. |
-| [`registry.yaml`](registry.yaml) | Canonical file registry и protocol routing anchors. | Maintainers и protocol tooling. |
-| [`skills-index.md`](skills-index.md) | Human-readable inventory staged skills и runtime notes. | Users и maintainers. |
-
-Local-only state directories вроде `.fpf-update/` могут появляться в рабочем checkout, но они intentionally ignored и не должны публиковаться как public skill или plugin content.
-
-## Artifact boundary
-
-Staged public copy в `skills/` - это не то же самое, что installed operational copy в `$HOME/.agents/skills`, `${CODEX_HOME:-$HOME/.codex}/skills` или другой runtime-директории агента.
-
-Plugin packages в `plugins/` включают только public skill source. Они не должны содержать personal launchers, LaunchAgents, session-start hooks, workspace jobs, cache, logs, local state, private overlays, private local policy files, runtime venvs, OCR binaries или generated outputs.
-
-Claude Code install profiles в `claude-code/` - это source-only adapters. Они
-устанавливают Claude Code slash commands, subagents или settings snippets,
-которые вызывают public staged skill scripts. Это не Codex plugins и не
-отдельные реализации skills.
-
-Перед packaging, redistribution или review skill artifacts используйте:
-
-[`docs/skill-artifact-model.md`](docs/skill-artifact-model.md)
-
-Когда обновляете public staged skills из local operational skills, используйте:
-
-[`docs/workflows/promote-local-skills.md`](docs/workflows/promote-local-skills.md)
+| Path | Что это |
+| --- | --- |
+| [`.agents/`](.agents/) | Repo-local metadata для Codex plugin marketplace. |
+| [`claude-code/`](claude-code/) | Source-only install profiles для Claude Code. |
+| [`docs/`](docs/) | Installation, validation, artifact model, ADRs, process models и workflows. |
+| [`plugins/`](plugins/) | Codex plugin packages, которые включают public skill source. |
+| [`protocols/`](protocols/) | FPF-backed protocol definitions, routing rules, checklists, SOPs и templates. |
+| [`scripts/`](scripts/) | Validation, promotion, drift-check и release-gate scripts. |
+| [`skills/`](skills/) | Public staged skill source. |
+| [`registry.yaml`](registry.yaml) | Canonical registry и protocol routing anchors. |
+| [`skills-index.md`](skills-index.md) | Human-readable inventory публичных staged skills. |
 
 ## License
 
-Этот репозиторий распространяется под [`MIT License`](LICENSE), если явно не указано другое.
+Репозиторий распространяется под [MIT License](LICENSE), если явно не указано другое.
 
 Third-party tools и dependencies сохраняют свои собственные licenses. Перед redistribution optional runtimes или dependency bundles проверяйте skill-specific third-party notices.

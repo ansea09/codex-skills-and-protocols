@@ -6,6 +6,12 @@ skills_dir="$repo_root/skills"
 manifest="$skills_dir/promote-manifest.yaml"
 only_skill="${SKILLS_VALIDATE_ONLY:-}"
 failed=0
+documentation_private_marker_paths="
+$repo_root/docs
+$repo_root/README.md
+$repo_root/README.ru.md
+$repo_root/skills-index.md
+"
 
 . "$repo_root/scripts/lib/skills-publication.sh"
 
@@ -217,6 +223,12 @@ else
     echo "ERROR: private markers found under skills/" >&2
     failed=1
   fi
+  for documentation_path in $documentation_private_marker_paths; do
+    if [ -e "$documentation_path" ] && ! scan_private_markers "$documentation_path"; then
+      echo "ERROR: private markers found under ${documentation_path#$repo_root/}" >&2
+      failed=1
+    fi
+  done
 fi
 
 if [ "$failed" -ne 0 ]; then

@@ -45,6 +45,8 @@ The validation checks:
 - every staged skill is listed in `skills-index.md`;
 - every skill listed in `skills/promote-manifest.yaml` exists under `skills/`;
 - no high-risk private markers are present under `skills/`;
+- no high-risk private markers are present under public documentation entrypoints:
+  `docs/`, `README.md`, `README.ru.md`, and `skills-index.md`;
 - `doc-to-md` frontmatter compatibility matches
   `skills/doc-to-md/references/support-matrix.md`;
 - `doc-to-md` frontmatter hash profiles are documented in
