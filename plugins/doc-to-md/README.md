@@ -7,6 +7,7 @@ private local policy file, not in this public plugin.
 
 ## What Is Included
 
+- `skills/doc-to-md/README.md`
 - `skills/doc-to-md/SKILL.md`
 - `skills/doc-to-md/agents/`
 - `skills/doc-to-md/scripts/`

@@ -11,6 +11,9 @@ Initial public `fpf-work-guide` release after the rename from `fpf-latest`.
 
 - Renamed the public skill and plugin package from `fpf-latest` to
   `fpf-work-guide`.
+- Added `README.md` to the public `fpf-work-guide` skill and plugin-bundled
+  skill copy as the user/maintainer entrypoint, keeping `SKILL.md` as the
+  executable routing contract.
 - Added migration guidance for installed copies, launchers, prompts, and
   environment variables that still reference `fpf-latest`.
 - Added explicit portable path policy for skill, cache, refresh state, and

@@ -25,6 +25,26 @@ compatibility:
 
 # FPF Work Guide
 
+## Document Roles
+
+This `SKILL.md` is the executable routing contract for the agent. Keep it
+focused on when to refresh FPF context, how to use protocol sources, and what
+must be disclosed in substantive work.
+
+User-facing install, portable invocation, Windows entrypoint, diagnostics,
+release notes, and publication guidance belong in `README.md`.
+
+Canonical detail sources:
+
+- `references/diagnostics.md` - refresh gate, environment, chunk, protocol, and
+  user-facing diagnostic fields.
+- `references/chunk-lookup.md` - FPF chunk layout and pattern lookup procedure.
+- `references/protocol-trust.md` - protocol repository trust boundary and
+  instruction-source policy.
+- `references/source-selection.md` - source selection for FPF-backed answers.
+- `references/release-notes.md` - user-visible release changes, migration notes,
+  validation evidence, and publication boundaries.
+
 ## Compatibility Contract
 
 This skill is Codex/macOS-first, with a native Windows PowerShell path. It can run through either the Bash scripts on Unix-like shells or the PowerShell scripts on native Windows. Treat Windows as release-verified only after the PowerShell/CMD validation lane has passed on a Windows or `pwsh` host.

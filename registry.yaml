@@ -39,6 +39,9 @@ canonical_files:
 
 skills:
   fpf_work_guide: skills/fpf-work-guide/SKILL.md
+  fpf_work_guide_readme: skills/fpf-work-guide/README.md
+  doc_to_md: skills/doc-to-md/SKILL.md
+  doc_to_md_readme: skills/doc-to-md/README.md
 
 process_models:
   assistant_user_interaction:

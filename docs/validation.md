@@ -98,8 +98,13 @@ Manual review checklist:
 
 - The staged copy is classified using [skill-artifact-model.md](skill-artifact-model.md) before review.
 - The skill does not expose secrets, tokens, local private paths, or private data.
+- Skill `README.md` files are optional user/maintainer documentation for published, operationally complex, or plugin-packaged skills; `SKILL.md` remains the executable routing contract.
+- Do not require README files for every skill. Do not add one when it only duplicates `SKILL.md` or `references/`.
+- Plugin-bundled skill copies include the same skill `README.md` as `skills/<name>/` when the staged skill has one.
 - `fpf-work-guide` installation docs include the one-time portable doctor command.
+- `fpf-work-guide` has a staged `README.md` covering install targets, portable invocation, Windows entrypoints, diagnostics, release notes, and publication boundaries.
 - `fpf-work-guide` behavior docs define `substantive task`, non-substantive interactions, and the agent-side task-admission start event with examples.
+- `doc-to-md` has a staged `README.md` covering install targets, workflow profiles, audit/OCR paths, diagnostics, release notes, and publication boundaries.
 - `doc-to-md` documentation describes one public skill with reusable workflow profiles, not a required `doc-to-md-private` companion skill.
 - `doc-to-md` frontmatter contains a short `compatibility` summary aligned with `references/support-matrix.md`.
 - `doc-to-md` Python minor-version claims are profile-specific and documented in `references/python-profiles.md`; unlisted Python minors stay candidate/unverified.
@@ -133,6 +138,7 @@ Manual review checklist:
 - Private overlays, runtime venvs, caches, local state files, logs, generated outputs, and upstream mirrors are not committed as staged skill content unless explicitly reviewed as public fixtures or examples.
 - Public examples do not imply capabilities that are not included in the repository.
 - Any optional runtime dependency is disclosed in `skills-index.md` and the skill's `SKILL.md`.
+- Root README, `skills-index.md`, staged skill READMEs, plugin READMEs, install docs, validation docs, and registry anchors describe the same public skill inventory.
 - `fpf-work-guide` and other FPF-backed skills disclose cached/fresh status rather than claiming "latest" when only cache is available.
 - `fpf-work-guide` treats `fpf-chunks-layout.env` as a parsed key/value layout contract, never as sourced shell code.
 - `fpf-work-guide` has been tested for at least: normal cache-only run, invalid state path fallback, staged/plugin/runtime copy sync, and plugin/skill structural validation.
