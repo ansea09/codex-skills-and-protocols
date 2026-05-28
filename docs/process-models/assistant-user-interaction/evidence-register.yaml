@@ -96,7 +96,7 @@ sources:
 
   - id: fpf-spec-cache
     title: First Principles Framework specification
-    local_path: /Users/macbook/.codex/cache/fpf-spec-mirror/FPF-Spec.md
+    local_path: "${CODEX_HOME:-$HOME/.codex}/cache/fpf-spec-mirror/FPF-Spec.md"
     source_type: local_cached_specification
     checked_on: 2026-05-23
     commit: 2cf02f22d9c06398945ee03670652a79506ffd36
