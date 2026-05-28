@@ -57,6 +57,8 @@ Canonical detail sources:
   signal, status file, thread notification, and approval boundary.
 - `references/markitdown-upgrade.md` - intentional MarkItDown converter upgrade
   lane and review checks.
+- `references/release-notes.md` - user-visible release changes, upgrade notes,
+  and promotion boundaries.
 - `references/threat-model.md` - trusted-local threat model and hosted-ingestion
   boundary.
 - `references/publishing.md` - public release, licensing, and transfer checks.
