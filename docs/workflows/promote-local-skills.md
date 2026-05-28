@@ -81,10 +81,10 @@ matrix, reads `mdown-doctor --json`, and runs the synthetic regression corpus.
 6. Review the diff:
 
 ```bash
-git diff -- skills skills-index.md docs examples scripts registry.yaml README.md
+git diff -- skills plugins skills-index.md docs examples scripts registry.yaml README.md .agents/plugins/marketplace.json
 ```
 
-7. Update `skills-index.md`, install docs, validation docs, and use cases when the public surface changed.
+7. Update root README, skill README, plugin README, `skills-index.md`, install docs, validation docs, registry anchors, and use cases when the public surface changed.
 8. Commit and push only after manual review.
 
 ## Safety Rules

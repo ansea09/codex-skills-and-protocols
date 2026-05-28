@@ -4,6 +4,7 @@ This plugin distributes the public `fpf-work-guide` Codex skill.
 
 ## What Is Included
 
+- `skills/fpf-work-guide/README.md`
 - `skills/fpf-work-guide/SKILL.md`
 - `skills/fpf-work-guide/scripts/`
 - `skills/fpf-work-guide/references/`
@@ -37,6 +38,12 @@ From the repository root:
 
 ```bash
 scripts/validate-plugins.sh
+```
+
+For user-facing install and operation details, read the bundled skill README:
+
+```text
+skills/fpf-work-guide/README.md
 ```
 
 For a portable install check after installation:

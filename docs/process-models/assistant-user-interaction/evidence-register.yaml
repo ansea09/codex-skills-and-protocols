@@ -4,12 +4,35 @@ purpose: >
   Source register for claims about the current OpenAI-facing assistant-user
   interaction process and the target FPF-mediated Codex process.
 
+freshness_policy:
+  moving_source_rule: >
+    URLs that point to mutable documentation pages, branch tips, or "latest"
+    resources support claims only as of their checked_on date unless this
+    register records a pinned version, archive URL, or commit.
+  refresh_before:
+    - promoting process-model definitions into executable protocols
+    - publishing claims about current OpenAI API or product behavior
+    - resolving conflicts between OpenAI-facing terms and protocol-local terms
+    - making release notes that depend on current external documentation
+  review_fields:
+    - checked_on
+    - retrieval_basis
+    - source_type
+    - supports
+    - notes
+  decision_rule: >
+    If a source is mutable and not pinned, phrase claims as "as checked on
+    checked_on" rather than "latest". If current behavior matters and the
+    source cannot be refreshed, mark the claim as stale-risk instead of accepted.
+
 sources:
   - id: openai-model-spec-latest
     title: OpenAI Model Spec
     url: https://raw.githubusercontent.com/openai/model_spec/main/model_spec.md
     source_type: official_specification_repository
     checked_on: 2026-05-23
+    retrieval_basis: moving_branch_latest_as_checked
+    pin_status: unpinned_moving_branch
     supports:
       - message roles as OpenAI API-facing terminology
       - conversation as list of messages
@@ -18,14 +41,18 @@ sources:
       - distinction between assistant, developer, user, and tool
     notes: >
       The rendered archive page at https://model-spec.openai.com/2025-12-18.html
-      states that a newer version may be available. The GitHub main branch is
-      used here as the latest official source checked during this change.
+      states that a newer version may be available. The GitHub main branch was
+      used as the official source available when checked; do not treat this
+      entry as a pinned latest claim after checked_on without refreshing or
+      adding a commit.
 
   - id: openai-text-generation-guide
     title: OpenAI Text generation guide
     url: https://developers.openai.com/api/docs/guides/text
     source_type: official_documentation
     checked_on: 2026-05-23
+    retrieval_basis: mutable_documentation_page_as_checked
+    pin_status: unpinned_mutable_page
     supports:
       - Responses API input examples with developer and user messages
       - developer messages prioritized ahead of user messages
@@ -37,6 +64,8 @@ sources:
     url: https://developers.openai.com/api/docs/guides/conversation-state
     source_type: official_documentation
     checked_on: 2026-05-23
+    retrieval_basis: mutable_documentation_page_as_checked
+    pin_status: unpinned_mutable_page
     supports:
       - previous_response_id continuation
       - conversation object as durable state
@@ -48,6 +77,8 @@ sources:
     url: https://developers.openai.com/api/docs/guides/file-inputs
     source_type: official_documentation
     checked_on: 2026-05-23
+    retrieval_basis: mutable_documentation_page_as_checked
+    pin_status: unpinned_mutable_page
     supports:
       - input_file items
       - file URL, file ID, and base64 file input modes
@@ -58,6 +89,8 @@ sources:
     url: https://developers.openai.com/codex
     source_type: official_documentation
     checked_on: 2026-05-23
+    retrieval_basis: mutable_documentation_page_as_checked
+    pin_status: unpinned_mutable_page
     supports:
       - Codex as OpenAI coding agent for software development
 
@@ -67,6 +100,8 @@ sources:
     source_type: local_cached_specification
     checked_on: 2026-05-23
     commit: 2cf02f22d9c06398945ee03670652a79506ffd36
+    retrieval_basis: local_cached_commit
+    pin_status: pinned_by_commit
     supports:
       - bounded context
       - system, episteme, carrier, described entity distinctions
@@ -82,6 +117,8 @@ sources:
     source_type: local_repository
     checked_on: 2026-05-23
     commit_before_change: fd5e4f556bf588f684372c107f199c059bd8435e
+    retrieval_basis: local_repository_commit_before_change
+    pin_status: pinned_by_commit_before_change
     supports:
       - protocol classification
       - routing

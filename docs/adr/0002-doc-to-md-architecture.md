@@ -94,6 +94,13 @@ source.
 The plugin artifact is also not runtime state. It is a packaging layer around
 the public skill source.
 
+`skills/doc-to-md/README.md` is the user and maintainer entrypoint for install,
+workflow, OCR, diagnostics, release notes, and publication guidance. `SKILL.md`
+remains the executable routing contract that an agent reads after the skill
+triggers. The plugin-bundled copy at
+`plugins/doc-to-md/skills/doc-to-md/README.md` must stay synchronized with the
+staged skill README through the normal staged/plugin drift check.
+
 ### 3. Use a narrow pinned MarkItDown core runtime
 
 The default runtime is a pinned local MarkItDown core profile, not

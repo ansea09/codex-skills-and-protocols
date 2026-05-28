@@ -10,8 +10,8 @@ A skill can exist in several related layers. These layers must not be collapsed 
 
 | Layer | Typical location | Purpose | Publication rule |
 | --- | --- | --- | --- |
-| Public staged copy | `skills/<name>/` in this repository | Reviewed public artifact for installation, issue discussion, and reuse. | May be committed and published after validation and manual diff review. |
-| Plugin distribution artifact | `plugins/<name>/` plus `.agents/plugins/marketplace.json` | Installable Codex package for sharing one or more public skills beyond a local checkout. | May be committed and published after plugin validation and manual diff review. |
+| Public staged copy | `skills/<name>/` in this repository | Reviewed public artifact for installation, issue discussion, and reuse. `SKILL.md` is the executable routing contract; optional `README.md` is user/maintainer documentation for published, operationally complex, or plugin-packaged skills. | May be committed and published after validation and manual diff review. |
+| Plugin distribution artifact | `plugins/<name>/` plus `.agents/plugins/marketplace.json` | Installable Codex package for sharing one or more public skills beyond a local checkout. Bundled skill copies include the same optional skill README as the staged source when that README exists. | May be committed and published after plugin validation and manual diff review. |
 | Installed operational copy | `$HOME/.agents/skills/<name>/`, `$REPO_ROOT/.agents/skills/<name>/`, `${CODEX_HOME:-$HOME/.codex}/skills/<name>/`, or another agent-specific runtime location | Active local copy loaded by Codex or another agent in a user environment. | Not automatically public; may drift from the staged copy. |
 | Private overlay skill | `$HOME/.agents/skills/<name>-private/`, `${CODEX_HOME:-$HOME/.codex}/skills/<name>-private/`, or another clearly private skill name | Personal defaults, local workflows, private fixtures, or user-specific policy layered on top of a public skill. | Never publish unless deliberately converted into a reviewed public skill. |
 | Private local policy file | `private/local-policies/<name>.md`, private notes, or another approved private repository path | Advisory user-specific defaults for an existing public skill, without creating a second skill. | Never publish in public skill or plugin artifacts; may be versioned only in a private repository. |
@@ -21,25 +21,32 @@ A skill can exist in several related layers. These layers must not be collapsed 
 | Generated output layer | converted documents, reports, temp directories, user outputs, generated audit bundles | Results produced by using a skill. | Not part of the skill unless intentionally added as reviewed fixtures or examples. |
 | Upstream source layer | package indexes, GitHub source repos, FPF mirrors, third-party docs | External sources used to install, refresh, or verify skill behavior. | Pin, cite, or disclose as needed; do not confuse upstream source with local staged skill content. |
 
-## Dependency Direction
+## Typed Artifact Relations
 
-Allowed dependency direction:
+Use typed relations instead of one generic dependency chain. The artifact layers
+do not all relate to each other in the same way.
 
-```text
-public staged copy
-  -> plugin distribution artifact
-  -> installed operational copy
-    -> runtime dependencies
-    -> cache and state
-    -> generated outputs
-    -> personal automation
-    -> private overlay skill
-    -> private local policy file
-```
+| Relation | From | To | Meaning | Review rule |
+| --- | --- | --- | --- | --- |
+| `packaged-as` | Public staged copy | Plugin distribution artifact | A plugin bundles reviewed public skill source for distribution. | Plugin content must stay source-only and must match staged skill source where validation requires it. |
+| `installed-from` | Public staged copy or plugin distribution artifact | Installed operational copy | A user or tool copies source into an agent runtime location. | Installed copies may drift; diagnose installed behavior separately from staged source. |
+| `uses-runtime` | Installed operational copy | Runtime dependency layer | Skill scripts call local commands, venvs, package managers, or external tools. | Document prerequisites; do not treat installed binaries or venvs as staged source. |
+| `writes-state` | Installed operational copy | Cache and state layer | Runtime execution writes cache, logs, status, or diagnostic state. | State is local evidence, not public source. |
+| `produces-output` | Installed operational copy | Generated output layer | Skill usage creates user artifacts such as converted files, reports, and audit bundles. | Outputs are not skill source unless deliberately reviewed as fixtures or examples. |
+| `invokes` | Personal automation layer | Installed operational copy | Local launchers, hooks, jobs, or aliases call an installed skill. | Public skills may document automation examples but must not require them. |
+| `extends-locally` | Private overlay skill | Public staged, plugin-distributed, or installed skill | A private skill layers local policy or workflows on top of public behavior. | Private overlays must not redefine public command semantics or be required by public artifacts. |
+| `advises` | Private local policy file | Public staged, plugin-distributed, or installed skill | Private notes record operator preferences without creating a second public skill. | Public artifacts may not require private policy files. |
+| `refreshes-from` | Installed operational copy or runtime dependency layer | Upstream source layer | Runtime tools fetch, install, or validate against external repositories, package indexes, or docs. | Pin, cite, or disclose freshness and trust status where it affects behavior. |
 
-Private overlays and personal automation may depend on a public, plugin-distributed, or installed skill. Public staged skills and plugin distribution artifacts must not depend on private overlays, personal automation, local cache/state, generated outputs, or machine-specific paths.
+Forbidden inverse relations:
 
-Private local policy files follow the same dependency direction as private overlays: they may refer to public skill behavior, but public staged skills and plugin artifacts must not require them.
+- Public staged skills and plugin artifacts must not require private overlays,
+  private local policy files, personal automation, local cache/state, generated
+  outputs, or machine-specific paths.
+- Plugin artifacts must not be treated as runtime state dumps.
+- Runtime dependencies and generated outputs must not be promoted into public
+  skill source unless they are intentionally reviewed fixtures, examples, or
+  small scripts that belong under `skills/<name>/`.
 
 ## Review Rules
 
@@ -58,6 +65,7 @@ Private local policy files follow the same dependency direction as private overl
 ### fpf-work-guide
 
 - Public staged copy: `skills/fpf-work-guide/`.
+- User-facing skill README: `skills/fpf-work-guide/README.md`.
 - Plugin distribution artifact: `plugins/fpf-work-guide/`.
 - Installed operational copy: `$HOME/.agents/skills/fpf-work-guide/`, `$REPO_ROOT/.agents/skills/fpf-work-guide/`, `${CODEX_HOME:-$HOME/.codex}/skills/fpf-work-guide/`, or another agent-specific runtime location.
 - Runtime dependency layer: shell utilities and `git`.
@@ -75,6 +83,7 @@ The public behavior model for task admission, substantive versus non-substantive
 ### doc-to-md
 
 - Public staged copy: `skills/doc-to-md/`.
+- User-facing skill README: `skills/doc-to-md/README.md`.
 - Plugin distribution artifact: `plugins/doc-to-md/`.
 - Installed operational copy: `${CODEX_HOME:-$HOME/.codex}/skills/doc-to-md/`, `$HOME/.agents/skills/doc-to-md/`, `$REPO_ROOT/.agents/skills/doc-to-md/`, or another agent-specific runtime location.
 - Private local policy file: for example `private/local-policies/doc-to-md.md`.
