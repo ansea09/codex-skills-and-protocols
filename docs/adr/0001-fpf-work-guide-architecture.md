@@ -53,7 +53,15 @@ The repository distinguishes:
 
 Public staged skills and plugin artifacts may depend on documented runtime prerequisites, but must not depend on private overlays, personal automation, cache/state, generated outputs, or machine-specific paths.
 
-### 4. Make the refresh gate the only refresh decision point
+### 4. Keep `README.md` user-facing and `SKILL.md` executable
+
+`skills/fpf-work-guide/README.md` is the user and maintainer entrypoint for installation, portable invocation, Windows entrypoints, diagnostics, release notes, and publication boundaries.
+
+`skills/fpf-work-guide/SKILL.md` remains the executable routing contract that an agent reads after the skill triggers. It should not grow into a full user manual while the README and references carry user-facing and detailed documentation.
+
+The plugin-bundled copy at `plugins/fpf-work-guide/skills/fpf-work-guide/README.md` must stay synchronized with the staged skill README through the normal staged/plugin drift check.
+
+### 5. Make the refresh gate the only refresh decision point
 
 `scripts/update_fpf_context.sh` and its native Windows equivalent `scripts/update_fpf_context.ps1` are the refresh gate implementations. They decide whether to fetch from GitHub or use cache-only validation.
 
@@ -70,13 +78,13 @@ The default TTL is 6 hours (`21600` seconds). A session-start launcher or hook m
 
 The public task-admission threshold, substantive-task definition, and event vocabulary are defined in [../fpf-work-guide-behavior-model.md](../fpf-work-guide-behavior-model.md). In short, a raw user message is not itself the start event for the public skill; the public skill boundary starts at agent-side admission of a normalized task as substantive work.
 
-### 5. Never call cached content "latest"
+### 6. Never call cached content "latest"
 
 When `FPF_SPEC_STATUS=cached` or `FPF_PROTOCOLS_STATUS=cached`, answers and diagnostics must say `current cached copy`, not `latest`.
 
 Freshness status is part of the contract. The skill must disclose whether FPF spec, chunks, and protocols were fresh, cached, missing, degraded, or blocked when that affects trust or user decisions.
 
-### 6. Use chunk-first FPF reads with layout contract validation
+### 7. Use chunk-first FPF reads with layout contract validation
 
 FPF pattern access is chunk-first.
 
@@ -107,7 +115,7 @@ If either commit is unavailable, the chunks are `degraded` and the agent must us
 
 If chunk layout is unavailable or incomplete, the skill may fall back to targeted reads from `FPF-Spec.md`. If neither chunks nor full spec are safe enough, FPF-backed work is blocked until the user provides a valid source or allows a fetch.
 
-### 7. Keep path lookup safe and simple
+### 8. Keep path lookup safe and simple
 
 Layout manifest and chunk lookup paths may follow only relative paths that:
 
@@ -117,7 +125,7 @@ Layout manifest and chunk lookup paths may follow only relative paths that:
 
 Unsafe layout manifest, metadata, or index paths are ignored. If the unsafe path affects the answer, the diagnostic should say what happened and what fallback was used.
 
-### 8. Protect cache repositories from destructive Git operations
+### 9. Protect cache repositories from destructive Git operations
 
 `git reset --hard` may run only in a dedicated FPF cache repository:
 
@@ -127,7 +135,7 @@ Unsafe layout manifest, metadata, or index paths are ignored. If the unsafe path
 
 The default path alone is not sufficient proof that a repository is safe to reset. If a custom or default cache path looks like an ordinary working repository and its marker or remote cannot be verified, the scripts must use the cached copy or block rather than resetting it.
 
-### 9. Use state-based environment checking, not noisy preflight on every run
+### 10. Use state-based environment checking, not noisy preflight on every run
 
 The environment check is for installation validation, portable checks, and meaningful environment changes. It must not print noisy diagnostics on every skill invocation.
 
@@ -149,7 +157,7 @@ Native Windows PowerShell uses the equivalent doctor:
 powershell -ExecutionPolicy Bypass -File "$env:FPF_WORK_GUIDE_SKILL_DIR\scripts\fpf-work-guide-doctor.ps1" --write-state
 ```
 
-### 10. Treat refresh state as an operational dependency
+### 11. Treat refresh state as an operational dependency
 
 The refresh gate depends on small local state files to decide whether to refresh, skip, or block:
 
@@ -170,7 +178,7 @@ The gate must distinguish an active refresh lock from an unavailable state direc
 
 When state is unavailable but cache-only validation succeeds, the gate may continue with the current cached copy and disclose that durable refresh state was not written. When state is unavailable and cache-only validation fails, FPF-backed work is blocked until the user fixes permissions or sets `FPF_UPDATE_STATE_DIR`, `FPF_REFRESH_STATE_DIR`, or `FPF_ENV_STATE_DIR` to a writable directory.
 
-### 11. Treat path defaults as replaceable defaults
+### 12. Treat path defaults as replaceable defaults
 
 The public skill must not treat `$HOME/.codex`, `$HOME/.agents`, or `$PWD/.fpf-update` as mandatory portable paths.
 
@@ -220,7 +228,7 @@ The environment check reports path modes so agents and maintainers can see which
 - `FPF_ENV_CHECK_STATE_PATH_MODE`
 - `FPF_ENV_CHECK_PATH_POLICY_MODE`
 
-### 12. Keep compatibility honest
+### 13. Keep compatibility honest
 
 The primary runtime is Codex on macOS.
 
@@ -235,13 +243,13 @@ Supported or documented modes:
 
 Fresh refresh requires Git and GitHub network access. The Bash path also requires Bash and standard Unix utilities. The native Windows path requires Windows PowerShell 5.1 or PowerShell 7+; CMD wrappers are entrypoints for the same PowerShell implementation. Cache fallback is supported when valid local caches exist. Documentation must distinguish "implemented" from "release-verified" for Windows and CI claims.
 
-### 13. Use explicit state paths for symlinked workspaces
+### 14. Use explicit state paths for symlinked workspaces
 
 When a workspace path is a symlink, diagnostics may alternate between the human-facing path and the resolved physical path.
 
 Launchers and hooks should pass `FPF_UPDATE_STATE_DIR` explicitly when stable human-facing diagnostics and migration notes matter.
 
-### 14. Separate session-start automation from skill execution
+### 15. Separate session-start automation from skill execution
 
 The skill itself does not detect "Codex session start" as an application lifecycle event.
 
@@ -249,7 +257,7 @@ Session-start refresh is implemented by an external launcher or hook that runs b
 
 The launcher or hook is personal automation. It may be documented as an example, but it is not required by the public skill or plugin artifact.
 
-### 15. Treat the protocol repository as an instruction source
+### 16. Treat the protocol repository as an instruction source
 
 The protocol repository is not passive reference text. It can determine routing, checklist execution, source discipline, and final answer structure.
 
@@ -267,7 +275,7 @@ The public skill therefore records protocol provenance through:
 
 The default personal policy follows the configured repository and branch and falls back to the current cached protocols when GitHub is unavailable. For public or high-impact use, maintainers should prefer a reviewed branch, pinned commit, or explicit repository allowlist. Protocol instructions must not override higher-priority system, developer, safety, or user instructions.
 
-### 16. Use human-readable diagnostics only when they change user action or trust
+### 17. Use human-readable diagnostics only when they change user action or trust
 
 Diagnostics should use this shape:
 
@@ -291,7 +299,7 @@ Detailed user-facing diagnostics are required only when:
 
 Routine TTL skips belong in the engineering basis, not as prominent warnings.
 
-### 17. Use a doc-sync gate for method and architecture changes
+### 18. Use a doc-sync gate for method and architecture changes
 
 Architecture-significant changes to `fpf-work-guide` must not silently drift away from documentation.
 
@@ -310,7 +318,7 @@ The gate is intentionally a verification trigger, not an automatic author. It ca
 
 The public skill and plugin must not depend on this private doc-sync gate. The gate belongs to personal maintenance automation around the skill.
 
-### 18. Keep architecture-review evidence in this ADR
+### 19. Keep architecture-review evidence in this ADR
 
 Architecture review should not rely on reconstructing the design only from shell scripts, PowerShell scripts, `SKILL.md`, and scattered references. For the current size of `fpf-work-guide`, the review evidence belongs directly in this ADR rather than in a separate architecture-review reference file. That keeps one decision source and reduces documentation drift.
 

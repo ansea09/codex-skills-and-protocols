@@ -10,8 +10,8 @@ A skill can exist in several related layers. These layers must not be collapsed 
 
 | Layer | Typical location | Purpose | Publication rule |
 | --- | --- | --- | --- |
-| Public staged copy | `skills/<name>/` in this repository | Reviewed public artifact for installation, issue discussion, and reuse. | May be committed and published after validation and manual diff review. |
-| Plugin distribution artifact | `plugins/<name>/` plus `.agents/plugins/marketplace.json` | Installable Codex package for sharing one or more public skills beyond a local checkout. | May be committed and published after plugin validation and manual diff review. |
+| Public staged copy | `skills/<name>/` in this repository | Reviewed public artifact for installation, issue discussion, and reuse. `SKILL.md` is the executable routing contract; optional `README.md` is user/maintainer documentation for published, operationally complex, or plugin-packaged skills. | May be committed and published after validation and manual diff review. |
+| Plugin distribution artifact | `plugins/<name>/` plus `.agents/plugins/marketplace.json` | Installable Codex package for sharing one or more public skills beyond a local checkout. Bundled skill copies include the same optional skill README as the staged source when that README exists. | May be committed and published after plugin validation and manual diff review. |
 | Installed operational copy | `$HOME/.agents/skills/<name>/`, `$REPO_ROOT/.agents/skills/<name>/`, `${CODEX_HOME:-$HOME/.codex}/skills/<name>/`, or another agent-specific runtime location | Active local copy loaded by Codex or another agent in a user environment. | Not automatically public; may drift from the staged copy. |
 | Private overlay skill | `$HOME/.agents/skills/<name>-private/`, `${CODEX_HOME:-$HOME/.codex}/skills/<name>-private/`, or another clearly private skill name | Personal defaults, local workflows, private fixtures, or user-specific policy layered on top of a public skill. | Never publish unless deliberately converted into a reviewed public skill. |
 | Private local policy file | `private/local-policies/<name>.md`, private notes, or another approved private repository path | Advisory user-specific defaults for an existing public skill, without creating a second skill. | Never publish in public skill or plugin artifacts; may be versioned only in a private repository. |
@@ -58,6 +58,7 @@ Private local policy files follow the same dependency direction as private overl
 ### fpf-work-guide
 
 - Public staged copy: `skills/fpf-work-guide/`.
+- User-facing skill README: `skills/fpf-work-guide/README.md`.
 - Plugin distribution artifact: `plugins/fpf-work-guide/`.
 - Installed operational copy: `$HOME/.agents/skills/fpf-work-guide/`, `$REPO_ROOT/.agents/skills/fpf-work-guide/`, `${CODEX_HOME:-$HOME/.codex}/skills/fpf-work-guide/`, or another agent-specific runtime location.
 - Runtime dependency layer: shell utilities and `git`.
@@ -75,6 +76,7 @@ The public behavior model for task admission, substantive versus non-substantive
 ### doc-to-md
 
 - Public staged copy: `skills/doc-to-md/`.
+- User-facing skill README: `skills/doc-to-md/README.md`.
 - Plugin distribution artifact: `plugins/doc-to-md/`.
 - Installed operational copy: `${CODEX_HOME:-$HOME/.codex}/skills/doc-to-md/`, `$HOME/.agents/skills/doc-to-md/`, `$REPO_ROOT/.agents/skills/doc-to-md/`, or another agent-specific runtime location.
 - Private local policy file: for example `private/local-policies/doc-to-md.md`.

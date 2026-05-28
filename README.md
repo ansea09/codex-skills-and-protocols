@@ -13,7 +13,8 @@ Use this repository when you want to:
 
 | Skill | What it does | Best use case | Start here |
 | --- | --- | --- | --- |
-| [`fpf-work-guide`](skills/fpf-work-guide/) | Maintains and uses current cached FPF context and Codex FPF protocols. | FPF-backed reasoning, planning, review, coding, and source-backed answers. | [`plugins/fpf-work-guide`](plugins/fpf-work-guide/) or [`skills/fpf-work-guide`](skills/fpf-work-guide/) |
+| [`fpf-work-guide`](skills/fpf-work-guide/) | Maintains and uses current cached FPF context and Codex FPF protocols. | FPF-backed reasoning, planning, review, coding, and source-backed answers. | [`skills/fpf-work-guide/README.md`](skills/fpf-work-guide/README.md) or [`plugins/fpf-work-guide`](plugins/fpf-work-guide/) |
+| [`doc-to-md`](skills/doc-to-md/) | Converts trusted local documents to Markdown with MarkItDown, optional PDF audit bundles, and optional OCR preprocessing. | Local document conversion, textbook-like PDF audit, scanned-PDF OCR preprocessing, and clean Markdown intermediates before analysis. | [`skills/doc-to-md/README.md`](skills/doc-to-md/README.md) or [`plugins/doc-to-md`](plugins/doc-to-md/) |
 
 For the full inventory, see [`skills-index.md`](skills-index.md).
 
@@ -30,6 +31,7 @@ This repository exposes plugin metadata here:
 Available plugin packages:
 
 - [`plugins/fpf-work-guide`](plugins/fpf-work-guide/) - plugin package for the public `fpf-work-guide` skill.
+- [`plugins/doc-to-md`](plugins/doc-to-md/) - plugin package for the public `doc-to-md` skill.
 
 If your Codex setup supports repo-local plugin marketplace discovery, point it at this repository's marketplace metadata. If not, use the manual skill-folder install below.
 
@@ -49,6 +51,13 @@ Install `fpf-work-guide`:
 ```bash
 cp -R skills/fpf-work-guide "$CODEX_SKILLS_TARGET/"
 bash "$CODEX_SKILLS_TARGET/fpf-work-guide/scripts/fpf-work-guide-doctor" --write-state
+```
+
+Install `doc-to-md` and build its core runtime:
+
+```bash
+cp -R skills/doc-to-md "$CODEX_SKILLS_TARGET/"
+bash "$CODEX_SKILLS_TARGET/doc-to-md/scripts/install.sh"
 ```
 
 For legacy/current local Codex setups that still load from `${CODEX_HOME:-$HOME/.codex}/skills`, or for Claude Code, WSL, and non-default paths, use the detailed instructions in [`docs/install.md`](docs/install.md).

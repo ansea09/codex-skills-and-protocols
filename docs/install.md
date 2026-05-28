@@ -35,6 +35,14 @@ Install one skill:
 cp -R skills/fpf-work-guide "$CODEX_SKILLS_TARGET/"
 ```
 
+For quick user-facing instructions after copying a skill, read its staged
+README when one exists. Current staged skill READMEs:
+
+```text
+skills/fpf-work-guide/README.md
+skills/doc-to-md/README.md
+```
+
 ### Migration From `fpf-latest`
 
 The former local skill name was `fpf-latest`. The public skill is now named `fpf-work-guide`.
@@ -229,8 +237,8 @@ export FPF_ENV_STATE_DIR="$FPF_UPDATE_STATE_DIR"
 
 ## Skill-Specific Notes
 
-`fpf-work-guide` expects Git and network access when a refresh is required. On Unix-like shells it uses Bash and standard Unix utilities. On native Windows it uses the bundled PowerShell scripts. If network access is unavailable but a valid cache already exists, it can use the current cached copy and disclose that status. Its scripts may run `git reset --hard` only when the cache directory contains a valid `.fpf-cache-repo` marker whose kind, repository URL, and branch match the configured cache, when the cache repository's `origin` remote matches the configured FPF/protocol repository URL, or when `FPF_ALLOW_NONSTANDARD_CACHE_RESET=1` is explicitly set.
+`fpf-work-guide` expects Git and network access when a refresh is required. On Unix-like shells it uses Bash and standard Unix utilities. On native Windows it uses the bundled PowerShell scripts. If network access is unavailable but a valid cache already exists, it can use the current cached copy and disclose that status. Its scripts may run `git reset --hard` only when the cache directory contains a valid `.fpf-cache-repo` marker whose kind, repository URL, and branch match the configured cache, when the cache repository's `origin` remote matches the configured FPF/protocol repository URL, or when `FPF_ALLOW_NONSTANDARD_CACHE_RESET=1` is explicitly set. Its user-facing install, portable invocation, Windows entrypoint, diagnostics, release notes, and publication guidance lives in `skills/fpf-work-guide/README.md`.
 
-`doc-to-md` expects trusted local files by default. Its public skill source may include reusable workflow profiles such as `Textbook Audit + OCR Profile`, but personal defaults belong in a private local policy file and are not installed as a second public skill.
+`doc-to-md` expects trusted local files by default. Its public skill source may include reusable workflow profiles such as `Textbook Audit + OCR Profile`, but personal defaults belong in a private local policy file and are not installed as a second public skill. Its user-facing install, workflow, OCR, diagnostics, release notes, and publication guidance lives in `skills/doc-to-md/README.md`.
 
 This public repository currently stages `fpf-work-guide` and `doc-to-md`. Other local or private skills should stay outside the public staged `skills/` tree unless they are deliberately promoted later.

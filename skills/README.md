@@ -6,8 +6,18 @@ Each skill is stored in its own directory and must include:
 
 - `SKILL.md`;
 - YAML frontmatter with `name` and `description`;
+- optional `README.md` for user-facing install, usage, and publication notes
+  when a skill is published, operationally complex, or packaged as a plugin;
 - optional `agents/openai.yaml`;
 - optional `references/`, `scripts/`, or requirements files when the skill needs supporting material.
+
+README files are not required for every skill. Do not add one when it would
+only duplicate `SKILL.md` or `references/`.
+
+Current staged skill READMEs:
+
+- [`fpf-work-guide/README.md`](fpf-work-guide/README.md)
+- [`doc-to-md/README.md`](doc-to-md/README.md)
 
 The source of truth for the staged list is [`../skills-index.md`](../skills-index.md).
 

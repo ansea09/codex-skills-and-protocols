@@ -8,7 +8,7 @@ Current plugins:
 
 | Plugin | Purpose | Runtime notes |
 | --- | --- | --- |
-| [`fpf-work-guide`](fpf-work-guide/) | Distributes the public `fpf-work-guide` skill as an installable Codex plugin. | Skill-only package. No bundled hooks, apps, or MCP servers. Includes Bash, PowerShell, and CMD wrapper entrypoints. Requires Git for fresh refresh. |
-| [`doc-to-md`](doc-to-md/) | Distributes the public `doc-to-md` skill as an installable Codex plugin. | Skill-only package. No bundled runtimes, OCR binaries, private local policies, or generated outputs. Users install core, book, and OCR runtimes locally as needed. |
+| [`fpf-work-guide`](fpf-work-guide/) | Distributes the public `fpf-work-guide` skill as an installable Codex plugin. | Skill-only package with bundled skill README, Bash, PowerShell, and CMD wrapper entrypoints. Requires Git for fresh refresh. |
+| [`doc-to-md`](doc-to-md/) | Distributes the public `doc-to-md` skill as an installable Codex plugin. | Skill-only package with bundled skill README. No bundled runtimes, OCR binaries, private local policies, or generated outputs. Users install core, book, and OCR runtimes locally as needed. |
 
 The repo-local marketplace is defined at [`../.agents/plugins/marketplace.json`](../.agents/plugins/marketplace.json).
