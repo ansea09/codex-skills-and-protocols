@@ -251,6 +251,11 @@ Read `references/publishing.md` and `THIRD_PARTY_NOTICES.md` before publishing
 or redistributing this skill. The default trust boundary is trusted local files
 only, not hosted ingestion of untrusted documents.
 
+Read `references/release-notes.md` before publishing or installing a new
+version. Release notes describe source changes and required user or maintainer
+actions; they do not treat local venvs, cache, generated outputs, or installed
+wrapper symlinks as release payloads.
+
 For hosted/shared environments, `doc-to-md` guardrails are not a sandbox. Read
 `references/threat-model.md` and add a separate sandboxed ingestion
 architecture before accepting untrusted documents.
