@@ -4,7 +4,7 @@ Status: Accepted
 
 Date: 2026-05-26 20:21:35 +0300
 
-Last updated: 2026-05-27
+Last updated: 2026-05-28
 
 ## Context
 
@@ -31,6 +31,10 @@ The skill must satisfy five different needs:
 
 The architecture must keep the public skill, private local policy, installed
 runtime, external tools, generated outputs, and migration artifacts separate.
+This ADR is also the compact architecture-review evidence carrier for
+architecture characteristics, quanta, fitness functions, and known evidence
+gaps. A separate architecture-review reference is intentionally not used while
+the system remains small enough for one decision record to stay readable.
 
 ## Decision
 
@@ -500,6 +504,84 @@ blocks, suspicious or empty output, audit warnings, OCR boundaries, write-safety
 issues, unsupported platform or runtime paths, and publication or licensing
 boundaries. Detailed wording lives in `skills/doc-to-md/references/diagnostics.md`.
 
+### 21. Keep architecture-review evidence in this ADR
+
+Architecture review should not rely on reconstructing the design only from
+wrapper code and scattered references. For the current size of `doc-to-md`, the
+review evidence belongs directly in this ADR rather than in a separate
+architecture-review reference file. That keeps one decision source and reduces
+documentation drift.
+
+If `doc-to-md` later grows into multiple independently released workflows or
+gets regular external architecture audits, the team may extract this section
+into a dedicated review artifact. Until then, this ADR is the architecture
+decision and review-evidence source.
+
+### Architecture Characteristics
+
+The selected driving characteristics are intentionally narrow:
+
+| Characteristic | Scope | Evidence |
+| --- | --- | --- |
+| Predictable local operation | Installed operational copy and local runtimes | Narrow pinned core runtime, URI/plugin/cloud blocks, doctors, core selftest. |
+| Reproducibility | Public staged skill, plugin artifact, release profiles | Exact pins, platform hash profiles, source release gate, regression snapshots. |
+| Artifact hygiene | Public staged copy, plugin artifact, private policy, generated outputs | Artifact model, source-only plugin, staged/plugin drift check, publishing checklist. |
+| Output trustworthiness | Markdown outputs, audit bundle, OCR workflow | Audit bundle, content/audit separation, OCR escalation rules, low-text warnings, regression corpus. |
+| Trust-boundary clarity | Wrappers, hosted/shared scenarios, public docs | Threat model, URI/advanced-mode blocks, input/output root checks, public warnings. |
+| Evolvability | Core/book/OCR/maintenance workflows | Separate runtimes, explicit experimental workflow rule, maintenance lanes, ADR alternatives. |
+| Portability honesty | Support matrix and install profiles | Frontmatter compatibility check, support matrix, Python profile register, doctors. |
+
+Secondary governed concerns are license/compliance review, dependency
+freshness, vulnerability evidence, and staged/plugin/installed promotion
+safety. These are governed through release and promotion checks rather than
+being added as separate top-level runtime features.
+
+### Architecture Quanta
+
+`doc-to-md` has multiple quanta:
+
+- public source artifact: `skills/doc-to-md/`;
+- plugin distribution artifact: `plugins/doc-to-md/`;
+- core conversion runtime: `markitdown-local`, `mdown`, and
+  `markitdown-core-venv`;
+- PDF audit runtime: `mdown-book` and `doc-to-md-book-venv`;
+- OCR preprocessor runtime: `mdown-ocrpdf`, `doc-to-md-ocr-venv`, Tesseract,
+  and rasterization tooling;
+- maintenance lane: drift monitors, lock refresh scripts, upgrade-lane scripts,
+  and local status/state files;
+- promotion lane: release gate checks that compare source/plugin/installed
+  copies and validate installed doctors.
+
+These quanta deliberately have different support boundaries and validation
+checks. A passing core conversion runtime does not prove OCR support; a passing
+source gate does not prove an installed operational copy; and plugin
+installation does not prove local venvs or external OCR tools are available.
+
+### Fitness Functions
+
+| Quality | Check | Cadence | Evidence | Failure action |
+| --- | --- | --- | --- | --- |
+| Artifact hygiene | Staged and plugin copies match. | Every release and PR touching `doc-to-md` | `scripts/validate-doc-to-md-release.sh --source` | Resync plugin copy before publication. |
+| Compatibility honesty | `SKILL.md` frontmatter matches `support-matrix.md`. | Every release | Source release gate semantic check | Update summary or canonical matrix before publication. |
+| Reproducibility | Source gate builds or reuses staged CI runtimes and validates doctors. | Every release | Source release gate output | Fix pins, wrappers, or schemas before publication. |
+| Output trustworthiness | Regression corpus snapshots match expected output. | Before MarkItDown upgrades and release | `scripts/regression_corpus.py` | Review diffs and update snapshots only in the same reviewed change. |
+| Audit traceability | Audit bundle regression captures page/image/link evidence. | Every release | `scripts/audit_bundle_regression.py` | Fix audit workflow or update the explicit output contract. |
+| Runtime diagnosability | Core/book/OCR doctor JSON validates against schemas. | Every release and after install | Release gate, local doctors | Fix doctor contract or runtime setup. |
+| Security/compliance evidence | Dependency audit reports vulnerability and license evidence. | Public release | `DOC_TO_MD_SCA_MODE=required scripts/validate-doc-to-md-release.sh --source` | Block public release until reviewed or fixed. |
+| Dependency governance | MarkItDown and PDF/OCR drift are detected without mutating runtime. | Weekly or release prep | `mdown-markitdown-monitor`, `mdown-dependency-monitor` | Open explicit upgrade/refresh lane when policy allows. |
+| Promotion safety | Installed copy matches public source and installed doctors validate. | Installed promotion | `scripts/validate-doc-to-md-release.sh --promotion` | Do not promote; rebuild or resync installed copy. |
+
+### Known Risks And Evidence Gaps
+
+| Risk or gap | Impact | Current mitigation | Trigger for new work |
+| --- | --- | --- | --- |
+| Hosted ingestion is unsupported. | Untrusted documents may exploit parser behavior or consume resources. | Trusted-local threat model and wrapper guardrails. | Any request to run this as a shared service. |
+| Textbook conversion is not high fidelity. | Formulas, tables, captions, vector diagrams, and inline placement may be wrong or missing. | Audit bundle evidence and OCR escalation. | Publication-quality textbook conversion becomes a target scenario. |
+| External OCR tools are outside Python locks. | Tesseract/Ghostscript availability can vary by machine. | OCR doctor and support matrix. | New platform support or OCR failures on maintained platforms. |
+| Python and wheel availability change over time. | Hash profiles and installs can break on new Python minors or platforms. | Profile-specific support register and release gate. | New Python minor, new OS/arch, or dependency wheel removal. |
+| Online SCA and drift checks need network. | CI may not have advisory or package metadata access. | Offline license/runtime audit plus required online mode for public release evidence. | Public release where online checks cannot run. |
+| Release governance is manual. | Maintainer can forget to run promotion gates. | Release notes, publishing checklist, source/promotion gates. | Repeated release misses or multiple maintainers. |
+
 ## Consequences
 
 ### Positive consequences
@@ -547,6 +629,8 @@ boundaries. Detailed wording lives in `skills/doc-to-md/references/diagnostics.m
   audit report semantics.
 - Plugin installation is not enough by itself; users must still build local
   runtimes and run doctors.
+- Architecture review documentation must stay aligned with the ADR, reference
+  docs, release gates, and wrapper behavior.
 - Formula-heavy, table-heavy, vector-diagram-heavy, or scanned materials may
   still need manual review or a different document-parsing engine.
 - Guardrails reduce accidental misuse but do not create a sandbox for untrusted
