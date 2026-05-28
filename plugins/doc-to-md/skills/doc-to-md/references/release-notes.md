@@ -26,6 +26,9 @@ audit bundles are local operational artifacts and are not release payloads.
   audit-bundle evidence.
 - Documented the trusted-local threat model: this skill is not a sandbox and is
   not a hosted ingestion service.
+- Expanded the repository ADR with compact architecture-review evidence:
+  architecture characteristics, quanta, fitness functions, risks, and evidence
+  gaps.
 - Documented the support matrix: Codex/macOS arm64 is the primary supported
   path; Intel macOS is supported for core/book on Python 3.12; WSL is a
   candidate; Claude Code on macOS is experimental with explicit runtime paths;
